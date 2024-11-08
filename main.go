@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	strconv "strconv"
+	"strconv"
 )
 
 /**
@@ -29,28 +29,9 @@ const (
 	RIGHT_PARENTHESIS
 	PARENTHESIS
 	WHITESPACE
-	INT
-	FLOAT
 	PROGRAM_END
 	UNKNOWN
 )
-
-var TERM = map[int]string{
-	OPERAND:           "OPERAND",
-	PLUS:              "PLUS",
-	MINUS:             "MINUS",
-	MULTIPLY:          "MULTIPLY",
-	DIVIDE:            "DIVIDE",
-	QUOTIENT:          "QUOTIENT",
-	MOD:               "MOD",
-	NUMBER:            "NUMBER",
-	LEFT_PARENTHESIS:  "LEFT_PARENTHESIS",
-	RIGHT_PARENTHESIS: "RIGHT_PARENTHESIS",
-	PARENTHESIS:       "PARENTHESIS",
-	WHITESPACE:        "WHITESPACE",
-	PROGRAM_END:       "PROGRAM_END",
-	UNKNOWN:           "UNKNOWN",
-}
 
 type Node struct {
 	Value interface{}
@@ -110,6 +91,8 @@ func (b *BinaryOperation) Eval() float64 {
 		return float64(int(left) / int(right))
 	case MOD:
 		return float64(int(left) % int(right))
+	default:
+		fmt.Println("Can not Eval: Unknown operator!")
 	}
 	return 0
 }
@@ -137,6 +120,9 @@ func (tokens *Tokenizer) printTokens() {
 			fmt.Println(node.Value.(string))
 			break
 		case PROGRAM_END:
+			break
+		default:
+			fmt.Println("UnKnow Token")
 			break
 		}
 	}
@@ -288,11 +274,6 @@ func getNumber(code string, currentIdx int) (int, Node) {
 	return currentIdx, node
 }
 
-func parseTerm() *Node {
-	node := Node{Value: "", Type: UNKNOWN}
-	return &node
-}
-
 func Scan(code string) *Tokenizer {
 	tokenizer := Tokenizer{tokens: []Node{}, pos: 0}
 
@@ -318,6 +299,9 @@ func Scan(code string) *Tokenizer {
 			currentIdx++
 			break
 		case UNKNOWN:
+			fmt.Printf("Unknown token at %d -> %c\n", currentIdx, code[currentIdx])
+			return nil
+		default:
 			fmt.Printf("Unknown token at %d -> %c\n", currentIdx, code[currentIdx])
 			return nil
 		}

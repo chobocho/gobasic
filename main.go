@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
+	"strings"
 )
 
 /**
@@ -102,6 +105,27 @@ type Tokenizer struct {
 	pos    int
 }
 
+func (tokens *Tokenizer) ToString() string {
+	if tokens == nil || len(tokens.tokens) == 0 {
+		return ""
+	}
+
+	var sb strings.Builder
+	for _, node := range tokens.tokens {
+		switch node.Type {
+		case NUMBER:
+			sb.WriteString(fmt.Sprintf("%v ", node.Value.(int64)))
+			break
+		case PLUS, MINUS, MULTIPLY, DIVIDE, QUOTIENT, MOD:
+			sb.WriteString(fmt.Sprintf("%v ", node.Value.(string)))
+			break
+		case LEFT_PARENTHESIS, RIGHT_PARENTHESIS:
+			sb.WriteString(fmt.Sprintf("%v ", node.Value.(string)))
+		}
+	}
+	return sb.String()
+}
+
 func (tokens *Tokenizer) printTokens() {
 	if tokens == nil || len(tokens.tokens) == 0 {
 		fmt.Println("No tokens")
@@ -113,7 +137,7 @@ func (tokens *Tokenizer) printTokens() {
 		case NUMBER:
 			fmt.Println(node.Value.(int64))
 			break
-		case OPERAND:
+		case PLUS, MINUS, MULTIPLY, DIVIDE, QUOTIENT, MOD:
 			fmt.Println(node.Value.(string))
 			break
 		case LEFT_PARENTHESIS, RIGHT_PARENTHESIS:
@@ -122,7 +146,7 @@ func (tokens *Tokenizer) printTokens() {
 		case PROGRAM_END:
 			break
 		default:
-			fmt.Println("UnKnow Token")
+			fmt.Printf("UnKnow Token: %v\n", node.Value)
 			break
 		}
 	}
@@ -301,9 +325,6 @@ func Scan(code string) *Tokenizer {
 		case UNKNOWN:
 			fmt.Printf("Unknown token at %d -> %c\n", currentIdx, code[currentIdx])
 			return nil
-		default:
-			fmt.Printf("Unknown token at %d -> %c\n", currentIdx, code[currentIdx])
-			return nil
 		}
 	}
 	tokenizer.tokens = append(tokenizer.tokens, Node{Value: "END", Type: PROGRAM_END})
@@ -312,18 +333,22 @@ func Scan(code string) *Tokenizer {
 
 func main() {
 	fmt.Println("Go Basic V0.1\nPress q! or exit to exit")
+	reader := bufio.NewReader(os.Stdin)
 
-	var code string
 	for {
 		fmt.Print(">> ")
-		fmt.Scanln(&code)
+		reader.Discard(reader.Buffered())
+		code, _ := reader.ReadString('\n')
+		if len(code) > 0 {
+			code = code[:len(code)-1]
+		}
 		if code == "exit" || code == "q!" {
 			break
 		}
 		tokens := Scan(code)
 		ast := tokens.ParseExpression()
 		if ast != nil {
-			fmt.Printf("%v = %v\n", code, ast.Eval())
+			fmt.Printf("%v = %v\n", tokens.ToString(), ast.Eval())
 		}
 	}
 	fmt.Println("=== Finished ===")

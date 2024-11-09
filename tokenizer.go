@@ -20,10 +20,8 @@ func (tokens *Tokenizer) ToString() string {
 		switch node.Type {
 		case NUMBER:
 			sb.WriteString(fmt.Sprintf("%v ", node.Value.(int64)))
-			break
 		case PLUS, MINUS, MULTIPLY, DIVIDE, QUOTIENT, MOD:
 			sb.WriteString(fmt.Sprintf("%v ", node.Value.(string)))
-			break
 		case LEFT_PARENTHESIS, RIGHT_PARENTHESIS:
 			sb.WriteString(fmt.Sprintf("%v ", node.Value.(string)))
 		}
@@ -41,18 +39,14 @@ func (tokens *Tokenizer) printTokens() {
 		switch node.Type {
 		case NUMBER:
 			fmt.Println(node.Value.(int64))
-			break
 		case PLUS, MINUS, MULTIPLY, DIVIDE, QUOTIENT, MOD:
 			fmt.Println(node.Value.(string))
-			break
 		case LEFT_PARENTHESIS, RIGHT_PARENTHESIS:
 			fmt.Println(node.Value.(string))
-			break
 		case PROGRAM_END:
-			break
+			fmt.Println("END")
 		default:
 			fmt.Printf("UnKnow Token: %v\n", node.Value)
-			break
 		}
 	}
 }

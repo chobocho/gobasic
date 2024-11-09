@@ -35,19 +35,14 @@ func getOperand(code string, currentIdx int) (int, Node) {
 	switch code[currentIdx] {
 	case '+':
 		op = PLUS
-		break
 	case '-':
 		op = MINUS
-		break
 	case '*':
 		op = MULTIPLY
-		break
 	case '/':
 		op = DIVIDE
-		break
 	case '%':
 		op = MOD
-		break
 	}
 
 	var node Node
@@ -85,20 +80,16 @@ func Scan(code string) *Tokenizer {
 			var node Node
 			currentIdx, node = getNumber(code, currentIdx)
 			tokenizer.tokens = append(tokenizer.tokens, node)
-			break
 		case OPERAND:
 			var node Node
 			currentIdx, node = getOperand(code, currentIdx)
 			tokenizer.tokens = append(tokenizer.tokens, node)
-			break
 		case PARENTHESIS:
 			var node Node
 			currentIdx, node = getParenthesis(code, currentIdx)
 			tokenizer.tokens = append(tokenizer.tokens, node)
-			break
 		case WHITESPACE:
 			currentIdx++
-			break
 		case UNKNOWN:
 			fmt.Printf("Unknown token at %d -> %c\n", currentIdx, code[currentIdx])
 			return nil

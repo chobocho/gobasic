@@ -60,7 +60,8 @@ func getOperand(code string, currentIdx int) (int, Node) {
 }
 
 func getPI(code string, currentIdx int) (int, Node) {
-	if currentIdx+2 >= len(code) || code[currentIdx+1] != 'I' {
+	if currentIdx+1 >= len(code) || code[currentIdx+1] != 'I' {
+		currentIdx++
 		return currentIdx, Node{Value: "", Type: UNKNOWN}
 	}
 
@@ -71,15 +72,34 @@ func getPI(code string, currentIdx int) (int, Node) {
 
 func getNumber(code string, currentIdx int) (int, Node) {
 	nu := ""
-	for currentIdx < len(code) && code[currentIdx] >= '0' && code[currentIdx] <= '9' {
+	isFloat := false
+	for currentIdx < len(code) && ((code[currentIdx] >= '0' && code[currentIdx] <= '9') || code[currentIdx] == '.') {
+		if code[currentIdx] == '.' {
+			if isFloat {
+				currentIdx++
+				return currentIdx, Node{Value: "", Type: UNKNOWN}
+			}
+			isFloat = true
+		}
 		nu += string(code[currentIdx])
 		currentIdx++
 	}
-	num, err := strconv.ParseInt(nu, 10, 64)
-	if err != nil {
-		panic(err)
+
+	var node Node
+	if isFloat {
+		num, err := strconv.ParseFloat(nu, 64)
+		if err != nil {
+			panic(err)
+		}
+		node = Node{Value: num, Type: FNUMBER}
+	} else {
+		num, err := strconv.ParseInt(nu, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		node = Node{Value: num, Type: NUMBER}
 	}
-	node := Node{Value: num, Type: NUMBER}
+
 	return currentIdx, node
 }
 

@@ -20,6 +20,10 @@ func (tokens *Tokenizer) ToString() string {
 		switch node.Type {
 		case NUMBER:
 			sb.WriteString(fmt.Sprintf("%v ", node.Value.(int64)))
+		case FNUMBER:
+			sb.WriteString(fmt.Sprintf("%v ", node.Value.(float64)))
+		case PI:
+			sb.WriteString(fmt.Sprintf("PI "))
 		case PLUS, MINUS, MULTIPLY, DIVIDE, QUOTIENT, MOD:
 			sb.WriteString(fmt.Sprintf("%v ", node.Value.(string)))
 		case LEFT_PARENTHESIS, RIGHT_PARENTHESIS:
@@ -39,6 +43,8 @@ func (tokens *Tokenizer) printTokens() {
 		switch node.Type {
 		case NUMBER:
 			fmt.Println(node.Value.(int64))
+		case FNUMBER:
+			fmt.Println(node.Value.(float64))
 		case PI:
 			fmt.Println("PI")
 		case PLUS, MINUS, MULTIPLY, DIVIDE, QUOTIENT, MOD:
@@ -125,6 +131,9 @@ func (tokens *Tokenizer) ParsePrimary() Expression {
 	case NUMBER:
 		tokens.pos++
 		return &Number{value: token.Value.(int64)}
+	case FNUMBER:
+		tokens.pos++
+		return &Number{floatValue: token.Value.(float64), Type: FLOAT}
 	case LEFT_PARENTHESIS:
 		tokens.pos++
 		expression := tokens.ParseExpression()

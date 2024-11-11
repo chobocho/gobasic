@@ -22,7 +22,7 @@ func TestGetType(t *testing.T) {
 		{"Carriage return", '\r', WHITESPACE},
 		{"Open Parenthesis", '(', PARENTHESIS},
 		{"Close Parenthesis", ')', PARENTHESIS},
-		{"PI", ')', PI},
+		{"PI", 'P', PI},
 		{"Unknown", '#', UNKNOWN},
 	}
 
@@ -40,9 +40,12 @@ func TestCalc(t *testing.T) {
 		code string
 		want float64
 	}{
+		{"PI", 3.1415926},
 		{"PI * 0", 0},
 		{"3+4", 7},
 		{"3+4 * 0", 3},
+		{"3.14 + 4 * 1", 7.140000000000001},
+		{"3.14 + PI * 1", 6.2815926},
 		{"PI * 10", 31.415926},
 	}
 

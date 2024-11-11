@@ -39,6 +39,8 @@ func (tokens *Tokenizer) printTokens() {
 		switch node.Type {
 		case NUMBER:
 			fmt.Println(node.Value.(int64))
+		case PI:
+			fmt.Println("PI")
 		case PLUS, MINUS, MULTIPLY, DIVIDE, QUOTIENT, MOD:
 			fmt.Println(node.Value.(string))
 		case LEFT_PARENTHESIS, RIGHT_PARENTHESIS:
@@ -117,6 +119,9 @@ func (tokens *Tokenizer) ParsePrimary() Expression {
 	token := tokens.tokens[tokens.pos]
 
 	switch token.Type {
+	case PI:
+		tokens.pos++
+		return &Number{floatValue: 3.1415926, Type: FLOAT}
 	case NUMBER:
 		tokens.pos++
 		return &Number{value: token.Value.(int64)}

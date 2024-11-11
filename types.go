@@ -15,6 +15,8 @@ const (
 	RIGHT_PARENTHESIS
 	PARENTHESIS
 	WHITESPACE
+	PI
+	FLOAT
 	PROGRAM_END
 	UNKNOWN
 )
@@ -29,10 +31,15 @@ type Expression interface {
 }
 
 type Number struct {
-	value int64
+	value      int64
+	floatValue float64
+	Type       int
 }
 
 func (n *Number) Eval() float64 {
+	if n.Type == FLOAT {
+		return n.floatValue
+	}
 	return float64(n.value)
 }
 

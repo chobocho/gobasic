@@ -12,6 +12,9 @@ func getType(c uint8) int {
 	if c >= '0' && c <= '9' {
 		return NUMBER
 	}
+	if c == 'P' {
+		return PI
+	}
 	if c == ' ' || c == '\t' || c == '\n' || c == '\r' {
 		return WHITESPACE
 	}
@@ -56,6 +59,16 @@ func getOperand(code string, currentIdx int) (int, Node) {
 	return currentIdx, node
 }
 
+func getPI(code string, currentIdx int) (int, Node) {
+	if currentIdx+2 >= len(code) || code[currentIdx+1] != 'I' {
+		return currentIdx, Node{Value: "", Type: UNKNOWN}
+	}
+
+	node := Node{Value: "PI", Type: PI}
+	currentIdx += 2
+	return currentIdx, node
+}
+
 func getNumber(code string, currentIdx int) (int, Node) {
 	nu := ""
 	for currentIdx < len(code) && code[currentIdx] >= '0' && code[currentIdx] <= '9' {
@@ -88,10 +101,17 @@ func Scan(code string) *Tokenizer {
 			var node Node
 			currentIdx, node = getParenthesis(code, currentIdx)
 			tokenizer.tokens = append(tokenizer.tokens, node)
+		case PI:
+			var node Node
+			currentIdx, node = getPI(code, currentIdx)
+			tokenizer.tokens = append(tokenizer.tokens, node)
 		case WHITESPACE:
 			currentIdx++
 		case UNKNOWN:
 			fmt.Printf("Unknown token at %d -> %c\n", currentIdx, code[currentIdx])
+			return nil
+		default:
+			fmt.Printf("Never come to here!token at %d -> %c\n", currentIdx, code[currentIdx])
 			return nil
 		}
 	}

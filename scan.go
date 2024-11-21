@@ -91,7 +91,7 @@ func getNumber(code string, currentIdx int) (int, Node) {
 		if err != nil {
 			panic(err)
 		}
-		node = Node{Value: num, Type: FNUMBER}
+		node = Node{Value: num, Type: REAL_NUMBER}
 	} else {
 		num, err := strconv.ParseInt(nu, 10, 64)
 		if err != nil {

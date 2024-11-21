@@ -20,7 +20,7 @@ func (tokens *Tokenizer) ToString() string {
 		switch node.Type {
 		case NUMBER:
 			sb.WriteString(fmt.Sprintf("%v ", node.Value.(int64)))
-		case FNUMBER:
+		case REAL_NUMBER:
 			sb.WriteString(fmt.Sprintf("%v ", node.Value.(float64)))
 		case PI:
 			sb.WriteString(fmt.Sprintf("PI "))
@@ -43,7 +43,7 @@ func (tokens *Tokenizer) printTokens() {
 		switch node.Type {
 		case NUMBER:
 			fmt.Println(node.Value.(int64))
-		case FNUMBER:
+		case REAL_NUMBER:
 			fmt.Println(node.Value.(float64))
 		case PI:
 			fmt.Println("PI")
@@ -59,7 +59,7 @@ func (tokens *Tokenizer) printTokens() {
 	}
 }
 
-func (tokens *Tokenizer) ParseExpression() Expression {
+func (tokens *Tokenizer) MaskAST() Expression {
 	if tokens == nil || len(tokens.tokens) == 0 {
 		return nil
 	}
@@ -131,12 +131,12 @@ func (tokens *Tokenizer) ParsePrimary() Expression {
 	case NUMBER:
 		tokens.pos++
 		return &Number{value: token.Value.(int64)}
-	case FNUMBER:
+	case REAL_NUMBER:
 		tokens.pos++
 		return &Number{floatValue: token.Value.(float64), Type: FLOAT}
 	case LEFT_PARENTHESIS:
 		tokens.pos++
-		expression := tokens.ParseExpression()
+		expression := tokens.MaskAST()
 		tokens.pos++
 		return expression
 	default:

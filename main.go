@@ -19,10 +19,15 @@ func main() {
 		if code == "q!" || code == "exit" || code == "quit" {
 			break
 		}
+
+		program := &Program{}
+
 		tokens := Scan(code)
-		ast := tokens.ParseExpression()
-		if ast != nil {
-			fmt.Printf("%v = %v\n", tokens.ToString(), ast.Eval())
+		expression := &ExpressionStatement{expression: tokens.MaskAST()}
+		program.statements = append(program.statements, *expression)
+
+		for _, statement := range program.statements {
+			fmt.Printf("%v = %v\n", tokens.ToString(), statement.expression.Eval())
 		}
 	}
 	fmt.Println("=== Finished ===")

@@ -52,7 +52,7 @@ func TestCalc(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.code, func(t *testing.T) {
 			tokens := Scan(tt.code)
-			ast := tokens.ParseExpression()
+			ast := tokens.MaskAST()
 			if got := ast.Eval(); got != tt.want {
 				t.Errorf("getType() = %v, want %v", got, tt.want)
 			}

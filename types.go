@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const (
 	OPERAND = iota
@@ -11,7 +13,7 @@ const (
 	QUOTIENT
 	MOD
 	NUMBER
-	FNUMBER
+	REAL_NUMBER
 	LEFT_PARENTHESIS
 	RIGHT_PARENTHESIS
 	PARENTHESIS
@@ -29,6 +31,45 @@ type Node struct {
 
 type Expression interface {
 	Eval() float64
+}
+
+type Variable struct {
+	name  string
+	value Expression
+}
+
+func (v *Variable) Eval() float64 {
+	if v == nil || v.value == nil {
+		return 0
+	}
+	return v.value.Eval()
+}
+
+type Assignment struct {
+	name  string
+	value Expression
+}
+
+func (a *Assignment) Eval() {
+	if a == nil || a.value == nil {
+		return
+	}
+	a.value.Eval()
+}
+
+type ExpressionStatement struct {
+	expression Expression
+}
+
+func (e *ExpressionStatement) Eval() {
+	if e == nil || e.expression == nil {
+		return
+	}
+	e.expression.Eval()
+}
+
+type Program struct {
+	statements []ExpressionStatement
 }
 
 type Number struct {
